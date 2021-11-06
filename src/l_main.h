@@ -17,7 +17,7 @@ typedef struct s_opts {
 } t_opts;
 
 typedef struct s_elem {
-    char * path;
+    void * content;
     struct s_elem * next;
 } t_elem;
 

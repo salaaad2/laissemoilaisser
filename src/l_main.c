@@ -25,9 +25,9 @@ int main(int ac, char *av[])
     opts.noopt = 1;
     if (ac <= 1)
     {
-        if ((elem.path = (char *)malloc(1)) == NULL)
+        if ((elem.content = (char *)malloc(1)) == NULL)
             return (1);
-        ft_strlcpy(elem.path, ".", 1);
+        ft_strlcpy(elem.content, ".", 1);
     }
     while (i < ac)
     {
