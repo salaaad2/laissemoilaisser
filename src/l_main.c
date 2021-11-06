@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "l_main.h"
+#include "u_lstcont.h"
 #include "../libft/include/libft.h"
 
 /*
@@ -13,8 +14,10 @@
 
 int main(int ac, char *av[])
 {
+    t_elem * elem;
+    t_elem * ptr;
+    t_elem * new;
     t_opts opts;
-    t_elem elem;
     int i;
     int j;
     int n;
@@ -22,13 +25,8 @@ int main(int ac, char *av[])
     i = 1;
     j = -1;
     n = 0;
+    elem = l_lstnew(".");
     opts.noopt = 1;
-    if (ac <= 1)
-    {
-        if ((elem.content = (char *)malloc(1)) == NULL)
-            return (1);
-        ft_strlcpy(elem.content, ".", 1);
-    }
     while (i < ac)
     {
         if (av[i][0] == '-')
@@ -51,9 +49,15 @@ int main(int ac, char *av[])
         else
         {
             n++;
-            /* ft_strlcpy(ls.path[n], av[i], ft_strlen(av[i])); */
+            new = malloc(sizeof(t_elem));
+            new->content = av[i];
+            l_lstadd_back(&elem, new);
         }
         i++;
+    }
+    for (ptr = elem; ptr; ptr = ptr->next)
+    {
+        ft_printf("%s\n", (char*)ptr->content);
     }
     return (0);
 }
