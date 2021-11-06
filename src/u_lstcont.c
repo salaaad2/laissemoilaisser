@@ -10,10 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "u_lsts.h"
+#include "u_lstcont.h"
 #include "l_main.h"
 #include <libft.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 void	l_lstdelone(t_elem *lst, void (*del)(void *))
 {
