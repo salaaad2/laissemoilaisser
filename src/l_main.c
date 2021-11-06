@@ -59,10 +59,12 @@ int main(int ac, char *av[])
         }
         i++;
     }
+    ft_printf("===========ARGS=========\n");
     for (ptr = elem; ptr; ptr = ptr->next)
     {
         ft_printf("%s\n", (char*)ptr->content);
     }
+    ft_printf("=========END ARGS=========\n");
     e_open(elem);
     return (0);
 }

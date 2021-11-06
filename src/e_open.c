@@ -22,7 +22,7 @@ int e_open(t_elem * elem)
         }
         else
         {
-            ft_printf("%10ld, %s\n", buf.st_size, (char*)node->content);
+            ft_printf("%10ld %s\n", buf.st_size, (char*)node->content);
         }
         node = node->next;
     }
