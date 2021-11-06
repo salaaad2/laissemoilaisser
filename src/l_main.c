@@ -4,12 +4,16 @@
 
 #include <stdlib.h>
 
-#include "l_main.h"
-#include "u_lstcont.h"
 #include "../libft/include/libft.h"
 
+#include "l_main.h"
+#include "u_lstcont.h"
+#include "e_open.h"
+
 /*
-** check for flags fill arguments
+** check for flags;
+** initialize linked list containing t_elem elements with all non option arguments.
+**
 */
 
 int main(int ac, char *av[])
@@ -59,5 +63,21 @@ int main(int ac, char *av[])
     {
         ft_printf("%s\n", (char*)ptr->content);
     }
+    e_open(elem);
     return (0);
 }
+
+/*
+** ====== INFO ======
+** Files prefixes info
+** -------------------
+** b_  -> builtins related
+** d_  -> defines related
+** e_  -> exec related
+** f_  -> failure related
+** m_  -> core minishell related
+** p_  -> parse related
+** s_  -> structs related
+** u_  -> utils related
+** v_  -> general purpose variables related
+*/
