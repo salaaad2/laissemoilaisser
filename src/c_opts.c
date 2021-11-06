@@ -11,11 +11,6 @@ int c_get_opts(t_opts * opts, int ac, char **av)
         return (1);
     }
 
-    while (c = s_flags[i])
-    {
-        if (ft_strchr(av[1], c))
-        {
-
-        }
-    }
+    c = s_flags[0];
+    ft_strchr(av[1], c);
 }

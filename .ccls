@@ -1,0 +1,5 @@
+-Wall
+-Werror
+-Wextra
+-std=c89
+-I./libft/include
