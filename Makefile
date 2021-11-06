@@ -19,10 +19,7 @@ SRCS_NAME		 = l_main
 #------------------------------------------------------------------------------#
 SRCS			 = $(addprefix ${SRCS_DIR}, $(addsuffix .c, ${SRCS_NAME}))
 #------------------------------------------------------------------------------#
-INCS_NAME		 = b_builtins
-INCS_NAME		+= d_enum
-INCS_NAME		+= d_define
-INCS_NAME		+= s_struct
+INCS_NAME		 = l_main
 #------------------------------------------------------------------------------#
 INCS			 = $(addprefix ${SRCS_DIR}, $(addsuffix .h, ${INCS_NAME}))
 INCS			+= $(patsubst %.c,%.h,${SRCS})

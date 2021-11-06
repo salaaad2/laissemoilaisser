@@ -3,8 +3,7 @@
 
 #include <sys/param.h>
 
-#define TRUE 1
-#define FALSE 0
+#include "../libft/include/libft.h"
 
 typedef unsigned char bool_t;
 
@@ -17,8 +16,9 @@ typedef struct s_opts {
     bool_t	noopt;
 } t_opts;
 
-typedef struct s_laisse {
-    char path[4096][4096];
-} t_laisse;
+typedef struct s_elem {
+    char * path;
+    struct s_elem * next;
+} t_elem;
 
-#endif // L_MAIN_H_
+#endif

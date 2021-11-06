@@ -2,6 +2,8 @@
 /*                      FT_LS by fmoenne. file: l_main.c                     */
 /*****************************************************************************/
 
+#include <stdlib.h>
+
 #include "l_main.h"
 #include "../libft/include/libft.h"
 
@@ -9,9 +11,10 @@
 ** check for flags fill arguments
 */
 
-int main(int ac, char *av[]) {
+int main(int ac, char *av[])
+{
     t_opts opts;
-    t_laisse ls;
+    t_elem elem;
     int i;
     int j;
     int n;
@@ -20,7 +23,12 @@ int main(int ac, char *av[]) {
     j = -1;
     n = 0;
     opts.noopt = 1;
-    ft_strlcpy(ls.path[n], ".", 1);
+    if (ac <= 1)
+    {
+        if ((elem.path = (char *)malloc(1)) == NULL)
+            return (1);
+        ft_strlcpy(elem.path, ".", 1);
+    }
     while (i < ac)
     {
         if (av[i][0] == '-')
@@ -43,7 +51,7 @@ int main(int ac, char *av[]) {
         else
         {
             n++;
-            ft_strlcpy(ls.path[n], av[i], ft_strlen(av[i]));
+            /* ft_strlcpy(ls.path[n], av[i], ft_strlen(av[i])); */
         }
         i++;
     }
