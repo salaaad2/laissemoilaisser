@@ -2,6 +2,8 @@
 #define L_MAIN_H_
 
 #include <sys/param.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "../libft/include/libft.h"
 
@@ -18,6 +20,10 @@ typedef struct s_opts {
 
 typedef struct s_elem {
     void * content;
+    bool_t exists;
+    bool_t isdir;
+    bool_t islink;
+
     struct s_elem * next;
 } t_elem;
 

@@ -10,19 +10,32 @@
 int e_open(t_elem * elem)
 {
     t_elem * node = elem;
+    struct dirent *de;
     struct stat buf;
     int exists;
+    DIR *d;
 
     while (node)
     {
-        exists = stat((char*)node->content, &buf);
-        if (exists < 0)
+        d = opendir((char*)node->content);
+        if (d == NULL)
         {
-            ft_printf("ls: %s: File not found\n", (char*)node->content);
+            ft_dprintf(2, "ls: %s: unable to open\n", (char*)node->content);
+            return (1);
         }
-        else
+        de = readdir(d);
+        while (de != NULL)
         {
-            ft_printf("%10ld %s\n", buf.st_size, (char*)node->content);
+            exists = stat(de->d_name, &buf);
+            if (exists < 0)
+            {
+                ft_dprintf(2, "ls: %s: File not found\n", de->d_name);
+            }
+            else
+            {
+                ft_printf("%10ld %s\n", buf.st_size, de->d_name);
+            }
+            de = readdir(d);
         }
         node = node->next;
     }
