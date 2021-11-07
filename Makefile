@@ -19,6 +19,7 @@ SRCS_NAME		 = l_main
 SRCS_NAME		 += e_open
 SRCS_NAME		 += u_lstcont
 SRCS_NAME		 += u_lstact
+SRCS_NAME		 += u_opts
 #------------------------------------------------------------------------------#
 SRCS			 = $(addprefix ${SRCS_DIR}, $(addsuffix .c, ${SRCS_NAME}))
 #------------------------------------------------------------------------------#

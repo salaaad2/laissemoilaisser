@@ -8,6 +8,7 @@
 
 #include "l_main.h"
 #include "u_lstcont.h"
+#include "u_opts.h"
 #include "e_open.h"
 
 /*
@@ -19,53 +20,33 @@
 int main(int ac, char *av[])
 {
     t_elem * elem;
-    t_elem * ptr;
     t_elem * new;
-    t_opts opts;
+    t_opts * opts;
     int i;
-    int j;
-    int n;
 
     i = 1;
-    j = -1;
-    n = 0;
     elem = l_lstnew(".");
-    opts.noopt = 1;
+    opts = u_initopts();
     while (i < ac)
     {
         if (av[i][0] == '-')
         {
-            while (av[i][++j])
-            {
-                if (av[i][j] == 'R')
-                    opts.recursive = 1;
-                else if (av[i][j] == 'l')
-                    opts.longout = 1;
-                else if (av[i][j] == 'a')
-                    opts.hidden = 1;
-                else if (av[i][j] == 's')
-                    opts.rsort = 1;
-                else if (av[i][j] == 't')
-                    opts.tsort = 1;
-            }
-            j = -1;
+            u_getopts(av, opts);
         }
         else
         {
-            n++;
             new = malloc(sizeof(t_elem));
             new->content = av[i];
             l_lstadd_back(&elem, new);
         }
         i++;
     }
-    ft_printf("===========ARGS=========\n");
-    for (ptr = elem; ptr; ptr = ptr->next)
-    {
-        ft_printf("%s\n", (char*)ptr->content);
-    }
-    ft_printf("=========END ARGS=========\n");
-    e_open(elem);
+    ft_printf("recurse : %d\n", opts->recursive);
+    ft_printf("hidden : %d\n", opts->hidden);
+    ft_printf("longout : %d\n", opts->longout);
+    ft_printf("rsort : %d\n", opts->rsort);
+    ft_printf("tsort : %d\n", opts->tsort);
+    e_open(elem, opts);
     return (0);
 }
 

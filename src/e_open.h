@@ -3,6 +3,6 @@
 
 #include "l_main.h"
 
-int e_open(t_elem * elem);
+int e_open(t_elem * elem, t_opts * opts);
 
 #endif
