@@ -3,3 +3,4 @@
 -Wextra
 -std=c89
 -I./libft/include
+-I/usr/local/lib/include
