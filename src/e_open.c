@@ -49,12 +49,13 @@ e_open(t_elem *elem, t_opts *opts) {
                 ft_sprintf(node->name, "%s", (char *)de->d_name);
                 ft_sprintf(full, "%s", node->name);
             }
+
             exists = stat(full, &buf);
             if (exists < 0) {
                 ft_dprintf(2, "ls: %s: File not found\n", full);
             }
             else if (node->name[0] == '.' &&
-                             opts->hidden == FALSE) { /* skip entry if file is hidden */
+                     opts->hidden == FALSE) { /* skip entry if file is hidden */
                 continue;
             }
             else if (S_ISDIR(buf.st_mode)) {
@@ -71,12 +72,48 @@ e_open(t_elem *elem, t_opts *opts) {
                 ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
             }
         }
+        e_sort(node, 0);
         if (l_lstsize(elem) > 1) {
             ft_sprintf(node->outbuf, "%s:\n%s\n", (char*)node->content, node->outbuf);
         }
         ft_dprintf(1, "%s\n", node->outbuf);
         closedir(d);
         node = node->next;
+    }
+    return (0);
+}
+
+/*
+** sort nodes. 3 modes :
+** 0: default: sort alphabetically
+** 1: time: sort by time
+** 2: reverse: reverse sort
+*/
+
+int
+e_sort(t_elem * node, unsigned char mode)
+{
+    char ** sortme = ft_split(node->outbuf, ' ');
+    char tmp[4096];
+    int i = 0;
+
+    while (sortme[i])
+    {
+        ft_printf("sortme : [%s]\n", sortme[i]);
+        if (mode == 0)
+        {
+            if (sortme[i + 1])
+            {
+                if (sortme[i][0] < sortme[i + 1][0])
+                {
+                    ft_printf("swap\n");
+                    ft_strlcpy(tmp, sortme[i], ft_strlen(sortme[i]));
+                    ft_strlcpy(sortme[i], sortme[i + 1], ft_strlen(sortme[i + 1]));
+                    ft_strlcpy(sortme[i + 1], sortme[i], ft_strlen(tmp));
+                }
+            }
+        }
+        i++;
     }
     return (0);
 }

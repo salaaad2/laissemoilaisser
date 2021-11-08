@@ -15,7 +15,8 @@
 #include <stddef.h>
 #include "u_lstact.h"
 
-int	l_lstsize(t_elem *lst)
+int
+l_lstsize(t_elem *lst)
 {
 	int	i;
 
@@ -30,7 +31,8 @@ int	l_lstsize(t_elem *lst)
 	return (i);
 }
 
-t_elem	*l_lstmap(t_elem *lst, void *(*f)(void *), void (*del)(void *))
+t_elem	*
+l_lstmap(t_elem *lst, void *(*f)(void *), void (*del)(void *))
 {
 	t_elem	*nlst;
 	t_elem	*new;
@@ -53,7 +55,8 @@ t_elem	*l_lstmap(t_elem *lst, void *(*f)(void *), void (*del)(void *))
 	return (nlst);
 }
 
-t_elem	*l_lstlast(t_elem *lst)
+t_elem	*
+l_lstlast(t_elem *lst)
 {
 	if (lst == NULL)
 	{
@@ -66,7 +69,8 @@ t_elem	*l_lstlast(t_elem *lst)
 	return (lst);
 }
 
-void	l_lstiter(t_elem *lst, void (*f)(void *))
+void
+l_lstiter(t_elem *lst, void (*f)(void *))
 {
 	if (lst == NULL)
 	{
@@ -77,4 +81,12 @@ void	l_lstiter(t_elem *lst, void (*f)(void *))
 		(*f)(lst->content);
 		lst = lst->next;
 	}
+}
+
+int
+l_lstswap(t_elem * one, t_elem * two)
+{
+	one->next = two->next;
+	two->next = one;
+	return (0);
 }

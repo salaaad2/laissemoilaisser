@@ -9,5 +9,6 @@
 #define STR_LONG "%s"
 
 int e_open(t_elem * elem, t_opts * opts);
+int e_sort(t_elem * elem, unsigned char mode);
 
 #endif
