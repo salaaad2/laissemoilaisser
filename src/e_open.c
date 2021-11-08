@@ -24,6 +24,7 @@ e_open(t_elem * elem, t_opts * opts)
     struct stat buf;
     int exists;
     DIR *d;
+    char full[4096 + 4096];
 
     while (node != NULL)
     {
@@ -36,22 +37,31 @@ e_open(t_elem * elem, t_opts * opts)
 
         while ((de = readdir(d)) != NULL)
         {
-            exists = stat(de->d_name, &buf);
-            if (exists < 0) {
-                ft_dprintf(2, "ls: %s: File not found %s\n", de->d_name, strerror(errno));
-            } else if (de->d_name[0] == '.' &&
-                       opts->hidden == FALSE) { /* skip entry if file is hidden */
-                continue;
-            } else if (S_ISDIR(buf.st_mode)) {
-                if (opts->recursive == FALSE)
-                    ft_sprintf(node->outbuf, "%s %s ", node->outbuf, de->d_name);
-            } else if (S_ISLNK(buf.st_mode)) {
-                ft_sprintf(node->outbuf, "%s %s ", node->outbuf, de->d_name);
-            } else if (buf.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
-                ft_sprintf(node->outbuf, "%s %s ", node->outbuf, de->d_name);
-            } else {
-                ft_sprintf(node->outbuf, "%s %s ", node->outbuf, de->d_name);
-            }
+          if (ft_strcmp(elem->content, ".") != 0) {
+              ft_sprintf(elem->path, "%s/", (char *)elem->content);
+              ft_sprintf(elem->name, "%s", (char *)de->d_name);
+              ft_sprintf(full, "%s/%s", elem->path, elem->name);
+          } else {
+              ft_sprintf(elem->name, "%s", (char *)de->d_name);
+              ft_sprintf(full, "%s", elem->name);
+          }
+          exists = stat(full, &buf);
+          if (exists  < 0) {
+            ft_dprintf(2, "ls: %s: File not found %s\n", de->d_name,
+                       strerror(errno));
+          } else if (elem->name[0] == '.' &&
+                     opts->hidden == FALSE) { /* skip entry if file is hidden */
+            continue;
+          } else if (S_ISDIR(buf.st_mode)) {
+            if (opts->recursive == FALSE)
+              ft_sprintf(node->outbuf, "%s %s ", node->outbuf, elem->name);
+          } else if (S_ISLNK(buf.st_mode)) {
+            ft_sprintf(node->outbuf, "%s %s ", node->outbuf, elem->name);
+          } else if (buf.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
+            ft_sprintf(node->outbuf, "%s %s ", node->outbuf, elem->name);
+          } else {
+            ft_sprintf(node->outbuf, "%s %s ", node->outbuf, elem->name);
+          }
         }
         ft_dprintf(1, "%s\n", node->outbuf);
         closedir(d);

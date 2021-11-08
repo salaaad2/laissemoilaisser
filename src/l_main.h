@@ -24,6 +24,8 @@ typedef struct s_elem {
     bool_t isdir;
     bool_t islink;
 
+    char path[4096];
+    char name[4096];
     char outbuf[42 * 4096];
 
     struct s_elem * next;
