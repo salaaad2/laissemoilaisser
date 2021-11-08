@@ -3,6 +3,11 @@
 
 #include "l_main.h"
 
+#define STR_INIT "%s"
+#define STR_CAT "%s %s"
+
+#define STR_LONG "%s"
+
 int e_open(t_elem * elem, t_opts * opts);
 
 #endif
