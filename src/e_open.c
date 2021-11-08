@@ -25,7 +25,7 @@ e_open(t_elem * elem, t_opts * opts)
     int exists;
     DIR *d;
 
-    while (node)
+    while (node != NULL)
     {
         d = opendir((char*)node->content);
         if (d == NULL) {
@@ -44,15 +44,15 @@ e_open(t_elem * elem, t_opts * opts)
                 continue;
             } else if (S_ISDIR(buf.st_mode)) {
                 if (opts->recursive == FALSE)
-                    ft_printf("%10ld %s/\n", buf.st_size, de->d_name);
+                    ft_printf("%10lld %s/\n", buf.st_size, de->d_name);
             } else if (S_ISDIR(buf.st_mode)) {
-                ft_printf("%10ld %s/\n", buf.st_size, de->d_name);
+                ft_printf("%10lld %s/\n", buf.st_size, de->d_name);
             } else if (S_ISLNK(buf.st_mode)) {
-                ft_printf("%10ld %s@\n", buf.st_size, de->d_name);
+                ft_printf("%10lld %s@\n", buf.st_size, de->d_name);
             } else if (buf.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
-                ft_printf("%10ld %s@\n", buf.st_size, de->d_name);
+                ft_printf("%10lld %s@\n", buf.st_size, de->d_name);
             } else {
-                ft_printf("%10ld %s\n", buf.st_size, de->d_name);
+                ft_printf("%10lld %s\n", buf.st_size, de->d_name);
             }
         }
         closedir(d);

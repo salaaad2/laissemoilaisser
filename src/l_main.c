@@ -37,6 +37,7 @@ int main(int ac, char *av[])
         {
             new = malloc(sizeof(t_elem));
             new->content = av[i];
+            new->next = NULL;
             l_lstadd_back(&elem, new);
         }
         i++;
