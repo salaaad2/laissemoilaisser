@@ -47,6 +47,9 @@ int main(int ac, char *av[])
     ft_printf("longout : %d\n", opts->longout);
     ft_printf("rsort : %d\n", opts->rsort);
     ft_printf("tsort : %d\n", opts->tsort);
+    if (elem->next != NULL) {
+        elem = elem->next;
+    }
     e_open(elem, opts);
     return (0);
 }

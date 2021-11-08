@@ -27,6 +27,7 @@ e_open(t_elem * elem, t_opts * opts)
 
     while (node != NULL)
     {
+        ft_bzero(node->outbuf, sizeof(node->outbuf));
         d = opendir((char*)node->content);
         if (d == NULL) {
             ft_dprintf(2, "ls: %s: unable to open%s\n", (char*)node->content, strerror(errno));
@@ -39,22 +40,20 @@ e_open(t_elem * elem, t_opts * opts)
             if (exists < 0) {
                 ft_dprintf(2, "ls: %s: File not found %s\n", de->d_name, strerror(errno));
             } else if (de->d_name[0] == '.' &&
-                       ft_strlen(de->d_name) != 1 &&
                        opts->hidden == FALSE) { /* skip entry if file is hidden */
                 continue;
             } else if (S_ISDIR(buf.st_mode)) {
                 if (opts->recursive == FALSE)
-                    ft_printf("%10lld %s/\n", buf.st_size, de->d_name);
-            } else if (S_ISDIR(buf.st_mode)) {
-                ft_printf("%10lld %s/\n", buf.st_size, de->d_name);
+                    ft_sprintf(node->outbuf, "%s %s ", node->outbuf, de->d_name);
             } else if (S_ISLNK(buf.st_mode)) {
-                ft_printf("%10lld %s@\n", buf.st_size, de->d_name);
+                ft_sprintf(node->outbuf, "%s %s ", node->outbuf, de->d_name);
             } else if (buf.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
-                ft_printf("%10lld %s@\n", buf.st_size, de->d_name);
+                ft_sprintf(node->outbuf, "%s %s ", node->outbuf, de->d_name);
             } else {
-                ft_printf("%10lld %s\n", buf.st_size, de->d_name);
+                ft_sprintf(node->outbuf, "%s %s ", node->outbuf, de->d_name);
             }
         }
+        ft_dprintf(1, "%s\n", node->outbuf);
         closedir(d);
         node = node->next;
     }
