@@ -72,7 +72,11 @@ e_open(t_elem *elem, t_opts *opts) {
                 ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
             }
         }
-        e_sort(node, 0);
+        if (opts->rsort) {
+            e_sort(node, 1);
+        } else {
+            e_sort(node, 0);
+        }
         if (l_lstsize(elem) > 1) {
             ft_sprintf(node->outbuf, "%s:\n%s\n", (char*)node->content, node->outbuf);
         }
@@ -99,21 +103,38 @@ e_sort(t_elem * node, unsigned char mode)
 
     while (sortme[i])
     {
-        ft_printf("sortme : [%s]\n", sortme[i]);
         if (mode == 0)
         {
             if (sortme[i + 1])
             {
-                if (sortme[i][0] < sortme[i + 1][0])
+                if (ft_tolower(sortme[i][0]) > ft_tolower(sortme[i + 1][0]))
                 {
-                    ft_printf("swap\n");
-                    ft_strlcpy(tmp, sortme[i], ft_strlen(sortme[i]));
-                    ft_strlcpy(sortme[i], sortme[i + 1], ft_strlen(sortme[i + 1]));
-                    ft_strlcpy(sortme[i + 1], sortme[i], ft_strlen(tmp));
+                    ft_sprintf(tmp, "%s", sortme[i]);
+                    ft_sprintf(sortme[i], "%s", sortme[i + 1]);
+                    ft_sprintf(sortme[i + 1], "%s", tmp);
+                    i = 0;
+                }
+            }
+        } else if (mode == 1) {
+            if (sortme[i + 1])
+            {
+                if (ft_tolower(sortme[i][0]) < ft_tolower(sortme[i + 1][0]))
+                {
+                    ft_sprintf(tmp, "%s", sortme[i]);
+                    ft_sprintf(sortme[i], "%s", sortme[i + 1]);
+                    ft_sprintf(sortme[i + 1], "%s", tmp);
+                    i = 0;
                 }
             }
         }
         i++;
+    }
+    i = 0;
+    ft_sprintf(node->outbuf, "%s", sortme[i]);
+    while (sortme[++i])
+    {
+        ft_printf("sortme[%d] : %s\n", i, sortme[i]);
+        ft_sprintf(node->outbuf, "%s %s", node->outbuf, sortme[i]);
     }
     return (0);
 }
