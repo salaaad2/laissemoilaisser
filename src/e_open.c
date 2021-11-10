@@ -4,10 +4,37 @@
 
 #include "e_open.h"
 #include "u_lstact.h"
+#include "l_perms.h"
 
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
+
+char *
+l_handle_dir(t_elem * node, DIR *d, struct dirent *de) {
+    char full[4096 + 4096];
+    (void)d;
+    (void)de;
+    d = opendir((char *)node->content);
+    if (d == NULL) {
+        ft_dprintf(2, "ls: %s: no such file or directory\n", (char *)node->content);
+        node = node->next;
+        return (NULL);
+    }
+
+    while ((de = readdir(d)) != NULL) {
+        if (ft_strcmp(node->content, ".") != 0) {
+            ft_sprintf(node->path, "%s", (char *)node->content);
+            ft_sprintf(node->name, "%s", (char *)de->d_name);
+            ft_sprintf(full, "%s/%s", node->path, node->name);
+        } else {
+            ft_sprintf(node->name, "%s", (char *)de->d_name);
+            ft_sprintf(full, "%s", node->name);
+        }
+        ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
+    }
+    return (ft_strdup(full));
+}
 
 /*
 ** linked list elem contains each non-option parameter
@@ -23,37 +50,24 @@
 int
 e_open(t_elem *elem, t_opts *opts) {
     t_elem *node = elem;
-    struct dirent *de;
+    struct dirent *de = NULL;
     struct stat buf;
     int exists;
-    DIR *d;
-    char full[4096 + 4096];
+    DIR *d = NULL;
 
     while (node != NULL) {
-        ft_bzero(node->outbuf, sizeof(node->outbuf));
         ft_bzero(node->path, sizeof(node->path));
         ft_bzero(node->name, sizeof(node->name));
+        ft_bzero(node->head, sizeof(node->head));
         exists = stat((char*)node->content, &buf);
-        if (S_ISDIR(buf))
+        if (exists > 0)
         {
-            d = opendir((char *)node->content);
-            if (d == NULL) {
-                ft_dprintf(2, "ls: %s: no such file or directory\n", (char *)node->content);
-                node = node->next;
-                continue;
-            }
-
-            while ((de = readdir(d)) != NULL) {
-                if (ft_strcmp(node->content, ".") != 0) {
-                    ft_sprintf(node->path, "%s", (char *)node->content);
-                    ft_sprintf(node->name, "%s", (char *)de->d_name);
-                    ft_sprintf(full, "%s/%s", node->path, node->name);
-                } else {
-                    ft_sprintf(node->name, "%s", (char *)de->d_name);
-                    ft_sprintf(full, "%s", node->name);
-                }
-                ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
-            }
+            node->head->buf = buf;
+            l_get_mode(node, node->head);
+        }
+        if (S_ISDIR(buf.st_mode))
+        {
+            l_handle_dir(node, d, de);
         }
         if (opts->rsort) {
             e_sort(node, 1);
@@ -63,7 +77,7 @@ e_open(t_elem *elem, t_opts *opts) {
         if (l_lstsize(elem) > 1) {
             ft_sprintf(node->outbuf, "%s:\n%s\n", (char*)node->content, node->outbuf);
         }
-        l_display(node->outbuf);
+        /* l_display(node->outbuf); */
         ft_dprintf(1, "%s\n", node->outbuf);
         closedir(d);
         node = node->next;

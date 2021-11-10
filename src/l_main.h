@@ -20,7 +20,10 @@ typedef struct s_opts {
 } t_opts ;
 
 typedef struct s_file {
+    char perms[4096];
+    char name[4096];
     struct stat buf;
+    struct s_file * next;
 } t_file ;
 
 typedef struct s_elem {
@@ -33,7 +36,7 @@ typedef struct s_elem {
     char name[4096];
     char outbuf[42 * 4096];
 
-    t_file file[4096];
+    t_file * head;
 
     struct s_elem * next;
 } t_elem ;
