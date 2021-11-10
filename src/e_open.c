@@ -33,42 +33,25 @@ e_open(t_elem *elem, t_opts *opts) {
         ft_bzero(node->outbuf, sizeof(node->outbuf));
         ft_bzero(node->path, sizeof(node->path));
         ft_bzero(node->name, sizeof(node->name));
-        d = opendir((char *)node->content);
-        if (d == NULL) {
-            ft_dprintf(2, "ls: %s: no such file or directory\n", (char *)node->content);
-            node = node->next;
-            continue;
-        }
-
-        while ((de = readdir(d)) != NULL) {
-            if (ft_strcmp(node->content, ".") != 0) {
-                ft_sprintf(node->path, "%s", (char *)node->content);
-                ft_sprintf(node->name, "%s", (char *)de->d_name);
-                ft_sprintf(full, "%s/%s", node->path, node->name);
-            } else {
-                ft_sprintf(node->name, "%s", (char *)de->d_name);
-                ft_sprintf(full, "%s", node->name);
-            }
-
-            exists = stat(full, &buf);
-            if (exists < 0) {
-                ft_dprintf(2, "ls: %s: File not found\n", full);
-            }
-            else if (node->name[0] == '.' &&
-                     opts->hidden == FALSE) { /* skip entry if file is hidden */
+        exists = stat((char*)node->content, &buf);
+        if (S_ISDIR(buf))
+        {
+            d = opendir((char *)node->content);
+            if (d == NULL) {
+                ft_dprintf(2, "ls: %s: no such file or directory\n", (char *)node->content);
+                node = node->next;
                 continue;
             }
-            else if (S_ISDIR(buf.st_mode)) {
-                if (opts->recursive == FALSE)
-                    ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
-            }
-            else if (S_ISLNK(buf.st_mode)) {
-                ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
-            }
-            else if (buf.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
-                ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
-            }
-            else {
+
+            while ((de = readdir(d)) != NULL) {
+                if (ft_strcmp(node->content, ".") != 0) {
+                    ft_sprintf(node->path, "%s", (char *)node->content);
+                    ft_sprintf(node->name, "%s", (char *)de->d_name);
+                    ft_sprintf(full, "%s/%s", node->path, node->name);
+                } else {
+                    ft_sprintf(node->name, "%s", (char *)de->d_name);
+                    ft_sprintf(full, "%s", node->name);
+                }
                 ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
             }
         }
@@ -80,6 +63,7 @@ e_open(t_elem *elem, t_opts *opts) {
         if (l_lstsize(elem) > 1) {
             ft_sprintf(node->outbuf, "%s:\n%s\n", (char*)node->content, node->outbuf);
         }
+        l_display(node->outbuf);
         ft_dprintf(1, "%s\n", node->outbuf);
         closedir(d);
         node = node->next;
@@ -103,6 +87,7 @@ e_sort(t_elem * node, unsigned char mode)
 
     while (sortme[i])
     {
+        ft_printf("full : %s\n", sortme[i]);
         if (mode == 0)
         {
             if (sortme[i + 1])
@@ -133,7 +118,6 @@ e_sort(t_elem * node, unsigned char mode)
     ft_sprintf(node->outbuf, "%s", sortme[i]);
     while (sortme[++i])
     {
-        ft_printf("sortme[%d] : %s\n", i, sortme[i]);
         ft_sprintf(node->outbuf, "%s %s", node->outbuf, sortme[i]);
     }
     return (0);

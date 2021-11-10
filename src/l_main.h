@@ -3,6 +3,7 @@
 
 #include <sys/param.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 
 #include "../libft/include/libft.h"
@@ -16,7 +17,11 @@ typedef struct s_opts {
     bool_t	rsort;
     bool_t	tsort;
     bool_t	noopt;
-} t_opts;
+} t_opts ;
+
+typedef struct s_file {
+    struct stat buf;
+} t_file ;
 
 typedef struct s_elem {
     void * content;
@@ -28,7 +33,9 @@ typedef struct s_elem {
     char name[4096];
     char outbuf[42 * 4096];
 
+    t_file file[4096];
+
     struct s_elem * next;
-} t_elem;
+} t_elem ;
 
 #endif
