@@ -54,7 +54,9 @@ e_open(t_elem *elem, t_opts *opts) {
     struct stat buf;
     int exists;
     DIR *d = NULL;
+    t_file file;
 
+    node->head = &file;
     while (node != NULL) {
         ft_bzero(node->path, sizeof(node->path));
         ft_bzero(node->name, sizeof(node->name));
