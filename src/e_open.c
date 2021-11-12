@@ -43,15 +43,14 @@ l_handle_dir(t_elem * node, t_opts *opts, DIR *d, struct dirent *de) {
         ft_sprintf(node->name, "%s", (char *)de->d_name);
         ft_sprintf(full, "%s/%s", node->path, node->name);
         exists = stat(full, &buf);
-        if (exists > 0) {
+        if (exists != -1) {
             if (opts->longout == FALSE) {
                 ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
             } else {
-                perms = l_get_mode(node, node->file);
-                ft_sprintf(node->outbuf, "%s %s %s", node->outbuf, perms, node->name);
+                perms = l_get_mode(&buf);
+                ft_sprintf(node->outbuf, "%s %s %s\n", node->outbuf, perms, node->name);
             }
         }
-        ft_dprintf(1, "readdir %s", full);
     }
     return (0);
 }
@@ -74,29 +73,22 @@ e_open(t_elem *elem, t_opts *opts) {
     struct stat buf;
     int exists;
     DIR *d = NULL;
-    t_file * file;
 
-    if ((file = ft_calloc(1, sizeof(t_file))) == NULL)
-        return (-1); /* fataL ERROR */
     while (node != NULL) {
         ft_bzero(node->path, sizeof(node->path));
         ft_bzero(node->name, sizeof(node->name));
         exists = stat((char*)node->content, &buf);
-        if (exists > 0)
-        {
-            node->file->buf = buf;
-        }
         if (S_ISDIR(buf.st_mode))
         {
             l_handle_dir(node, opts, d, de);
         }/*  else { */
         /*     l_handle_file(); */
         /* } */
-        if (opts->rsort) {
-            e_sort(node, 1);
-        } else {
-            e_sort(node, 0);
-        }
+        /* if (opts->rsort) { */
+        /*     e_sort(node, 1); */
+        /* } else { */
+        /*     e_sort(node, 0); */
+        /* } */
         if (l_lstsize(elem) > 1) {
             ft_sprintf(node->outbuf, "%s:\n%s\n", (char*)node->content, node->outbuf);
         }
@@ -104,7 +96,6 @@ e_open(t_elem *elem, t_opts *opts) {
         closedir(d);
         node = node->next;
     }
-    free(file);
     free(opts);
     return (0);
 }

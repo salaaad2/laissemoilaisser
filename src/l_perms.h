@@ -3,6 +3,6 @@
 
 #include "l_main.h"
 
-char * l_get_mode(t_elem * node, t_file * f);
+char * l_get_mode(struct stat * buf);
 
 #endif
