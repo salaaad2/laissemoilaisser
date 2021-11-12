@@ -7,10 +7,11 @@
 #include "l_perms.h"
 
 #include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 
-char *
+int
 l_handle_dir(t_elem * node, DIR *d, struct dirent *de) {
     char full[4096 + 4096];
     (void)d;
@@ -19,7 +20,7 @@ l_handle_dir(t_elem * node, DIR *d, struct dirent *de) {
     if (d == NULL) {
         ft_dprintf(2, "ls: %s: no such file or directory\n", (char *)node->content);
         node = node->next;
-        return (NULL);
+        return (-1);
     }
 
     while ((de = readdir(d)) != NULL) {
@@ -28,7 +29,7 @@ l_handle_dir(t_elem * node, DIR *d, struct dirent *de) {
         ft_sprintf(full, "%s/%s", node->path, node->name);
         ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
     }
-    return (ft_strdup(full));
+    return (0);
 }
 
 /*
@@ -50,12 +51,15 @@ e_open(t_elem *elem, t_opts *opts) {
     int exists;
     DIR *d = NULL;
     char * perms;
+    t_file * file;
 
-    if
+    if ((file = ft_calloc(1, sizeof(t_file))) == NULL)
+        return (-1); /* fataL ERROR */
+    if ((perms = ft_calloc(9, sizeof(char))) == NULL)
+        return (-1); /* fataL ERROR */
     while (node != NULL) {
         ft_bzero(node->path, sizeof(node->path));
         ft_bzero(node->name, sizeof(node->name));
-        ft_bzero(node->file, sizeof(node->file));
         ft_bzero(perms, 9);
         exists = stat((char*)node->content, &buf);
         if (exists > 0)
@@ -81,6 +85,8 @@ e_open(t_elem *elem, t_opts *opts) {
         node = node->next;
     }
     free(perms);
+    free(file);
+    free(opts);
     return (0);
 }
 
@@ -131,7 +137,10 @@ e_sort(t_elem * node, unsigned char mode)
     ft_sprintf(node->outbuf, "%s", sortme[i]);
     while (sortme[++i])
     {
+        free(sortme[i - 1]);
         ft_sprintf(node->outbuf, "%s %s", node->outbuf, sortme[i]);
     }
+    free(sortme[i]);
+    free(sortme);
     return (0);
 }
