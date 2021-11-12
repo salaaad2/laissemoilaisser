@@ -36,7 +36,7 @@ typedef struct s_elem {
     char name[4096];
     char outbuf[42 * 4096];
 
-    t_file * head;
+    t_file * file;
 
     struct s_elem * next;
 } t_elem ;

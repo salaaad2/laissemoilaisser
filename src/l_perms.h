@@ -3,6 +3,6 @@
 
 #include "l_main.h"
 
-int l_get_mode(t_elem * node, t_file * f);
+char * l_get_mode(t_elem * node, t_file * f);
 
 #endif

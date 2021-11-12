@@ -23,14 +23,9 @@ l_handle_dir(t_elem * node, DIR *d, struct dirent *de) {
     }
 
     while ((de = readdir(d)) != NULL) {
-        if (ft_strcmp(node->content, ".") != 0) {
-            ft_sprintf(node->path, "%s", (char *)node->content);
-            ft_sprintf(node->name, "%s", (char *)de->d_name);
-            ft_sprintf(full, "%s/%s", node->path, node->name);
-        } else {
-            ft_sprintf(node->name, "%s", (char *)de->d_name);
-            ft_sprintf(full, "%s", node->name);
-        }
+        ft_sprintf(node->path, "%s", (char *)node->content);
+        ft_sprintf(node->name, "%s", (char *)de->d_name);
+        ft_sprintf(full, "%s/%s", node->path, node->name);
         ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
     }
     return (ft_strdup(full));
@@ -54,18 +49,20 @@ e_open(t_elem *elem, t_opts *opts) {
     struct stat buf;
     int exists;
     DIR *d = NULL;
-    t_file file;
+    char * perms;
 
-    node->head = &file;
+    if
     while (node != NULL) {
         ft_bzero(node->path, sizeof(node->path));
         ft_bzero(node->name, sizeof(node->name));
-        ft_bzero(node->head, sizeof(node->head));
+        ft_bzero(node->file, sizeof(node->file));
+        ft_bzero(perms, 9);
         exists = stat((char*)node->content, &buf);
         if (exists > 0)
         {
-            node->head->buf = buf;
-            l_get_mode(node, node->head);
+            node->file->buf = buf;
+            perms = l_get_mode(node, node->file);
+            ft_strlcpy(node->file->perms, perms, 9);
         }
         if (S_ISDIR(buf.st_mode))
         {
@@ -79,11 +76,11 @@ e_open(t_elem *elem, t_opts *opts) {
         if (l_lstsize(elem) > 1) {
             ft_sprintf(node->outbuf, "%s:\n%s\n", (char*)node->content, node->outbuf);
         }
-        /* l_display(node->outbuf); */
         ft_dprintf(1, "%s\n", node->outbuf);
         closedir(d);
         node = node->next;
     }
+    free(perms);
     return (0);
 }
 
@@ -103,7 +100,7 @@ e_sort(t_elem * node, unsigned char mode)
 
     while (sortme[i])
     {
-        ft_printf("full : %s\n", sortme[i]);
+        /* ft_printf("full : %s\n", sortme[i]); */
         if (mode == 0)
         {
             if (sortme[i + 1])
