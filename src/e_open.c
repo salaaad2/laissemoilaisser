@@ -12,10 +12,22 @@
 #include <sys/stat.h>
 
 int
-l_handle_dir(t_elem * node, DIR *d, struct dirent *de) {
-    char full[4096 + 4096];
+l_handle_file(t_elem * node, t_opts * opts, DIR *d, struct dirent *de)
+{
+    (void)node;
+    (void)opts;
     (void)d;
     (void)de;
+    return (0);
+}
+
+int
+l_handle_dir(t_elem * node, t_opts *opts, DIR *d, struct dirent *de) {
+    char full[4096 + 4096];
+    struct stat buf;
+    int exists = 0;
+    char * perms;
+
     d = opendir((char *)node->content);
     if (d == NULL) {
         ft_dprintf(2, "ls: %s: no such file or directory\n", (char *)node->content);
@@ -24,10 +36,22 @@ l_handle_dir(t_elem * node, DIR *d, struct dirent *de) {
     }
 
     while ((de = readdir(d)) != NULL) {
+        if (de->d_name[0] == '.' &&
+            opts->hidden == FALSE)
+            continue;
         ft_sprintf(node->path, "%s", (char *)node->content);
         ft_sprintf(node->name, "%s", (char *)de->d_name);
         ft_sprintf(full, "%s/%s", node->path, node->name);
-        ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
+        exists = stat(full, &buf);
+        if (exists > 0) {
+            if (opts->longout == FALSE) {
+                ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
+            } else {
+                perms = l_get_mode(node, node->file);
+                ft_sprintf(node->outbuf, "%s %s %s", node->outbuf, perms, node->name);
+            }
+        }
+        ft_dprintf(1, "readdir %s", full);
     }
     return (0);
 }
@@ -50,28 +74,24 @@ e_open(t_elem *elem, t_opts *opts) {
     struct stat buf;
     int exists;
     DIR *d = NULL;
-    char * perms;
     t_file * file;
 
     if ((file = ft_calloc(1, sizeof(t_file))) == NULL)
         return (-1); /* fataL ERROR */
-    if ((perms = ft_calloc(9, sizeof(char))) == NULL)
-        return (-1); /* fataL ERROR */
     while (node != NULL) {
         ft_bzero(node->path, sizeof(node->path));
         ft_bzero(node->name, sizeof(node->name));
-        ft_bzero(perms, 9);
         exists = stat((char*)node->content, &buf);
         if (exists > 0)
         {
             node->file->buf = buf;
-            perms = l_get_mode(node, node->file);
-            ft_strlcpy(node->file->perms, perms, 9);
         }
         if (S_ISDIR(buf.st_mode))
         {
-            l_handle_dir(node, d, de);
-        }
+            l_handle_dir(node, opts, d, de);
+        }/*  else { */
+        /*     l_handle_file(); */
+        /* } */
         if (opts->rsort) {
             e_sort(node, 1);
         } else {
@@ -84,7 +104,6 @@ e_open(t_elem *elem, t_opts *opts) {
         closedir(d);
         node = node->next;
     }
-    free(perms);
     free(file);
     free(opts);
     return (0);
