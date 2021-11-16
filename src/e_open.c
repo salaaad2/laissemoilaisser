@@ -26,7 +26,7 @@ l_handle_dir(t_elem * node, t_opts *opts, DIR *d, struct dirent *de) {
     char full[4096 + 4096];
     struct stat buf;
     int exists = 0;
-    char * perms;
+    char * format;
 
     d = opendir((char *)node->content);
     if (d == NULL) {
@@ -47,8 +47,9 @@ l_handle_dir(t_elem * node, t_opts *opts, DIR *d, struct dirent *de) {
             if (opts->longout == FALSE) {
                 ft_sprintf(node->outbuf, "%s %s", node->outbuf, node->name);
             } else {
-                perms = l_get_mode(&buf);
-                ft_sprintf(node->outbuf, "%s %s %s\n", node->outbuf, perms, node->name);
+                format = l_get_mode(&buf);
+                ft_sprintf(node->outbuf, "%s %s %7ld %s\n", node->outbuf, format, buf.st_size, node->name);
+                buf.st_gid;
             }
         }
     }
@@ -81,14 +82,9 @@ e_open(t_elem *elem, t_opts *opts) {
         if (S_ISDIR(buf.st_mode))
         {
             l_handle_dir(node, opts, d, de);
-        }/*  else { */
-        /*     l_handle_file(); */
-        /* } */
-        /* if (opts->rsort) { */
-        /*     e_sort(node, 1); */
-        /* } else { */
-        /*     e_sort(node, 0); */
-        /* } */
+        } else {
+            l_handle_file(node, opts, d, de);
+        }
         if (l_lstsize(elem) > 1) {
             ft_sprintf(node->outbuf, "%s:\n%s\n", (char*)node->content, node->outbuf);
         }
